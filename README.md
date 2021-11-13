@@ -493,7 +493,8 @@ deny_info http://super.franky.e01.com/ BLACKLIST
 ```
 Kemudian config terpisah dapat ditambahkan
 
-Karena sulit untuk mengecek yang -1, maka saya memberi screenshot dengan membatasi 100byte. Untuk contoh tidak dibandwidth.
+Karena sulit untuk mengecek yang -1, maka kami memberi screenshot dengan membatasi 100byte. Untuk contoh tidak dibandwidth.
+
 ![tidakdibandwidth](https://user-images.githubusercontent.com/57633103/141646057-de5b500b-1ec1-47d2-b5d3-431a2933f5df.png)
 
 ## Script.sh
