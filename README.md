@@ -26,23 +26,13 @@ Script dan config" secara lengkap dapat dilihat pada repo https://github.com/the
 
 > Luffy bersama Zoro berencana membuat peta tersebut dengan kriteria EniesLobby sebagai DNS Server, Jipangu sebagai DHCP Server, Water7 sebagai Proxy Server.
 
-Enies → bind9
+Kita install satu persatu kebutuhan pada node-node dibawah ini
 
-Jipangu → isc-dhcp-server
+1. Enies → bind9
+2. Jipangu → isc-dhcp-server
+3. Water7 → squid
 
-Water7 → squid
-
-Maka, kita dapat menginstall 1 1 kebutuhan pada node"
-
-```shell
-apt-get update
-
-apt-get install bind9 -y
-
-apt-get install isc-dhcp-server -y
-
-apt-get install squid -y
-```
+Memberikan perintah apt-get update untuk melakukan update. Kemudian melakukan instalasi dengan `apt-get install namanode -y`.
 
 **Script**
 ```bash
@@ -65,7 +55,9 @@ apt-get install bind9 -y
 ```
 
 **Pada Jipangu**
-Ubah config interfaces di isc-dhcp-server, tambahkan eth0.
+
+Ubah config interfaces di isc-dhcp-server dengan menambahkan eth0.
+
 ```bash
 INTERFACES="eth0"
 ```
@@ -74,7 +66,7 @@ INTERFACES="eth0"
 
 > Menjadikan Foosha sebagai DHCP Relay.
 
-Tambahkan script untuk menginstall relay pada foosha.
+Menambahkan script untuk menginstall relay pada foosha.
 
 ```bash
 apt-get update
@@ -99,24 +91,22 @@ INTERFACES="eth1 eth2 eth3"
 OPTIONS=""
 ```
 
-Server mengarah ke jipangu karena berlaku sebagai relay, dan Interfaces ke eth1 2 3 yang merupakan switch 1 2 3.
+Server mengarah ke Jipangu karena berlaku sebagai relay dan Interfaces ke eth1 2 3 yang merupakan switch 1 2 3. Untuk bagian berikutnya dikosongkan.
 
 ## 3-6
 
 > Semua client yang ada HARUS menggunakan konfigurasi IP dari DHCP Server.
 
-Edit network config Alabasta, Loguetown, Skypie, Tottoland menjadi
+Edit network config **Alabasta, Loguetown, Skypie, Tottoland** menjadi
 
 ```bash
 auto eth0
 iface eth0 inet dhcp
 ```
 
-## 3
+DHCP akan memberikan ip masing-masing ke **Alabasta, Loguetown, Skypie dan Tottoland**
 
-> Client yang melalui Switch1 mendapatkan range IP dari [prefix IP].1.20 - [prefix IP].1.99 dan [prefix IP].1.150 - [prefix IP].1.169.
-
-Edit konfigurasi.
+**Konfigurasi DHCP*
 
 ```bash
 subnet 192.200.1.0 netmask 255.255.255.0 {
@@ -142,105 +132,143 @@ subnet 192.200.2.0 netmask 255.255.255.0 {
         option routers 192.200.2.1;
 }
 ```
+
+## 3
+
+> Client yang melalui Switch1 mendapatkan range IP dari [prefix IP].1.20 - [prefix IP].1.99 dan [prefix IP].1.150 - [prefix IP].1.169.
+
+Mengedit konfigurasi dhcpnya.
+
+```bash
+subnet 192.200.1.0 netmask 255.255.255.0 {
+    range 192.200.1.20 192.200.1.99;
+    range 192.200.1.150 192.200.1.169;
+    ...
+}
+
+subnet 192.200.3.0 netmask 255.255.255.0 {
+    ...
+}
+
+subnet 192.200.2.0 netmask 255.255.255.0 {
+    ...
+}
+```
+
+Konfigurasi range ip dapat dilihat pada script config subnet pertama tersebut yang mana dapat dituliskan dengan dua baris berbeda untuk tiap rangenya.
 
 ## 4
 
 > Client yang melalui Switch3 mendapatkan range IP dari [prefix IP].3.30 - [prefix IP].3.50.
 
-Edit konfigurasi.
+Mengedit konfigurasi dhcpnya.
 
 ```bash
 subnet 192.200.1.0 netmask 255.255.255.0 {
-    range 192.200.1.20 192.200.1.99;
-    range 192.200.1.150 192.200.1.169;
-    option routers 192.200.1.1;
-    option broadcast-address 192.200.1.255;
-    option domain-name-servers 192.200.2.2;
-    default-lease-time 360;
-    max-lease-time 7200;
+    ...
 }
 
 subnet 192.200.3.0 netmask 255.255.255.0 {
     range 192.200.3.30 192.200.3.50;
-    option routers 192.200.3.1;
-    option broadcast-address 192.200.3.255;
-    option domain-name-servers 192.200.2.2;
-    default-lease-time 720;
-    max-lease-time 7200;
+    ...
 }
 
 subnet 192.200.2.0 netmask 255.255.255.0 {
-        option routers 192.200.2.1;
+    ...
 }
 ```
+
+Konfigurasi range ip sama dengan no 3, hanya saja letaknya pada config kedua kedua yaitu `subnet 192.200.3.0 netmask 255.255.255.0`.
 
 ## 5
 
 > Client mendapatkan DNS dari EniesLobby dan client dapat terhubung dengan internet melalui DNS tersebut.
 
-Edit konfigurasi.
+Mengedit konfigurasi dhcpnya.
 
 ```bash
 subnet 192.200.1.0 netmask 255.255.255.0 {
-    range 192.200.1.20 192.200.1.99;
-    range 192.200.1.150 192.200.1.169;
-    option routers 192.200.1.1;
-    option broadcast-address 192.200.1.255;
+    ...
     option domain-name-servers 192.200.2.2;
-    default-lease-time 360;
-    max-lease-time 7200;
+    ...
 }
 
 subnet 192.200.3.0 netmask 255.255.255.0 {
-    range 192.200.3.30 192.200.3.50;
-    option routers 192.200.3.1;
-    option broadcast-address 192.200.3.255;
+    ...
     option domain-name-servers 192.200.2.2;
-    default-lease-time 720;
-    max-lease-time 7200;
+    ...
 }
 
 subnet 192.200.2.0 netmask 255.255.255.0 {
-        option routers 192.200.2.1;
+    ...
 }
 ```
+
+Mengarahkan option ke DNSnya dengan `option domain-name-servers` yang mana `192.200.2.2` merupakan ip EniesLobby.
 
 ## 6
 
 > Lama waktu DHCP server meminjamkan alamat IP kepada Client yang melalui Switch1 selama 6 menit sedangkan pada client yang melalui Switch3 selama 12 menit. Dengan waktu maksimal yang dialokasikan untuk peminjaman alamat IP selama 120 menit.
 
-Edit konfigurasi.
+Mengedit konfigurasi dhcpnya.
 
 ```bash
 subnet 192.200.1.0 netmask 255.255.255.0 {
-    range 192.200.1.20 192.200.1.99;
-    range 192.200.1.150 192.200.1.169;
-    option routers 192.200.1.1;
-    option broadcast-address 192.200.1.255;
-    option domain-name-servers 192.200.2.2;
+    ...
     default-lease-time 360;
     max-lease-time 7200;
 }
 
 subnet 192.200.3.0 netmask 255.255.255.0 {
-    range 192.200.3.30 192.200.3.50;
-    option routers 192.200.3.1;
-    option broadcast-address 192.200.3.255;
-    option domain-name-servers 192.200.2.2;
+    ...
     default-lease-time 720;
     max-lease-time 7200;
 }
 
 subnet 192.200.2.0 netmask 255.255.255.0 {
-        option routers 192.200.2.1;
+    ...
 }
 ```
+
+Penggunaan timenya berdasarkan detik, sehingga 6 menit menjadi 360, 12 menit menjadi 720 dan 120 menjadi 7200.
+
+## Testing 3-6
+
+Hasil yang mana IP berasal dari DHCP.
+
+![testing 3-6 part1](https://user-images.githubusercontent.com/65794806/141647048-cd5bf3ff-0772-448e-a5f8-2b5937c7a027.png)
+
+![testing 3-6 part2](https://user-images.githubusercontent.com/65794806/141647050-6a71369f-ec70-4b5b-82f0-5712fc397f22.png)
 
 ## 7
 
 > Luffy dan Zoro berencana menjadikan Skypie sebagai server untuk jual beli kapal yang dimilikinya dengan alamat IP yang tetap dengan IP [prefix IP].3.69.
 
---
+Pertama, mengambil hwaddress pada Skypie.
+
+yang mana didapatkan nilai `f2:94:26:ac:52:fd` pada `link/ether `.
+
+Kemudian mengedit config pada Jipangu, `dhcpd.conf`
+
+```bash
+host Skypie {
+    hardware ethernet f2:94:26:ac:52:fd;
+    fixed-address 192.200.3.69;
+}
+```
+
+Lalu menambahkan `hwaddress` pada config skypie
+
+```bash
+auto eth0
+iface eth0 inet dhcp
+hwaddress ether f2:94:26:ac:52:fd
+```
+**Hasil**
+
+![no 7](https://user-images.githubusercontent.com/65794806/141647247-fd8e31e5-e552-4539-9374-79cb5676e32e.png)
+
+IP pada Skypie berupa fixed address
 
 ## 8
 
@@ -252,8 +280,60 @@ Pada squid.conf di water7, tambahkan
 http_port 5000
 visible_hostname jualbelikapal.e01.com
 ```
+Untuk jualbelikapal
+
+```bash
+;
+; BIND data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	jualbelikapal.e01.com. root.jualbelikapal.e01.com. (
+			      2021110901		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+@	IN	NS	jualbelikapal.e01.com.
+@	IN	A	192.200.2.3
+www	IN	CNAME	jualbelikapal.e01.com.
+```
 
 Kemudian nyalakan squid
+
+**Testing**
+
+Untuk melakukan testing di Loguetown, maka kita harus menyalakan forwarders pada DNS dulu EniesLobby. Yaitu pada named.conf.options.
+
+```bash
+forwarders {
+        192.168.122.1
+};
+
+// dnssec-validation auto;
+allow-query { any; };
+```
+
+Kemudian restart bind9
+
+Di loguetown, install lynx, lalu tambahkan `export http_proxy=http://192.200.2.3:5000` untuk mengeset proxy pada client.
+
+`lynx http://its.ac.id`
+
+![no 8 fail](https://user-images.githubusercontent.com/65794806/141647468-486f4e7a-0461-44de-a1b5-827228f0333c.png)
+
+Hasilnya masih belum bisa diakses karena di deny proxy. Sehingga kita tambahkan allow supaya bisa diakses dengan cara.
+
+```bash
+"/etc/squid/squid.conf"
+
+http_port 5000
+visible_hostname jualbelikapal.e01.com
+
+http_access allow all
+```
+
+![no 8 ok](https://user-images.githubusercontent.com/65794806/141647528-2355fb2a-1941-46b6-b88c-6234b014fc2f.png)
 
 ## 9
 
@@ -288,6 +368,20 @@ auth_param basic casesensitive on
 acl USERS proxy_auth REQUIRED
 http_access allow USERS
 ```
+
+**Testing**
+
+`lynx http://its.ac.id`
+
+![no 9 4](https://user-images.githubusercontent.com/65794806/141647641-e223af5e-2f58-4257-9879-90e1ffed45c9.png)
+
+![no 9 1](https://user-images.githubusercontent.com/65794806/141647642-67071c36-82b0-49b5-80e7-d9fef1261c4a.png)
+
+![no 9 2](https://user-images.githubusercontent.com/65794806/141647644-c363a0d0-633e-44a0-824f-ef2fe1181979.png)
+
+![no 9 3](https://user-images.githubusercontent.com/65794806/141647646-1f1e1cb9-50ee-44ff-bc7c-f27bc12ea8d7.png)
+
+Kedua username dan password berhasil masuk.
 
 ## 10
 
@@ -356,6 +450,16 @@ auth_param basic casesensitive on
 acl USERS proxy_auth REQUIRED
 http_access allow USERS
 ```
+
+**Testing**
+
+![no 10 not](https://user-images.githubusercontent.com/65794806/141647680-86695088-8ba4-41e5-92ce-332a411e3d0e.png)
+
+Hasil diatas jika denied.
+
+![no 10 ok](https://user-images.githubusercontent.com/65794806/141647683-baedd711-bb78-451c-ab5b-b24dd215fa24.png)
+
+Hasil jika bisa masuk.
 
 ## 11
 
@@ -429,6 +533,14 @@ ServerName 192.200.3.69
 
 Pada Water7, ditambahkan nameserver mengarah ke enieslobby.
 
+**Testing**
+
+lynx google.com
+
+![no 11 2](https://user-images.githubusercontent.com/65794806/141647764-1fad2f3f-2948-484c-9126-a8c8070e2365.png)
+
+Hasil dari lynx google, akan ter-redirect ke super.franky.
+
 ## 12 & 13
 
 > Saatnya berlayar! Luffy dan Zoro akhirnya memutuskan untuk berlayar untuk mencari harta karun di super.franky.yyy.com. Tugas pencarian dibagi menjadi dua misi, Luffy bertugas untuk mendapatkan gambar (.png, .jpg), sedangkan Zoro mendapatkan sisanya. Karena Luffy orangnya sangat teliti untuk mencari harta karun, ketika ia berhasil mendapatkan gambar, ia mendapatkan gambar dan melihatnya dengan kecepatan 10 kbps **(12)** Sedangkan, Zoro yang sangat bersemangat untuk mencari harta karun, sehingga kecepatan kapal Zoro tidak dibatasi ketika sudah mendapatkan harta yang diinginkannya **(13)**
@@ -493,8 +605,7 @@ deny_info http://super.franky.e01.com/ BLACKLIST
 ```
 Kemudian config terpisah dapat ditambahkan
 
-Karena sulit untuk mengecek yang -1, maka kami memberi screenshot dengan membatasi 100byte. Untuk contoh tidak dibandwidth.
-
+Karena sulit untuk mengecek yang -1, maka saya memberi screenshot dengan membatasi 100byte. Untuk contoh tidak dibandwidth.
 ![tidakdibandwidth](https://user-images.githubusercontent.com/57633103/141646057-de5b500b-1ec1-47d2-b5d3-431a2933f5df.png)
 
 ## Script.sh
