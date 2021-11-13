@@ -429,13 +429,137 @@ ServerName 192.200.3.69
 
 Pada Water7, ditambahkan nameserver mengarah ke enieslobby.
 
-## 12
+## 12 & 13
 
-> Saatnya berlayar! Luffy dan Zoro akhirnya memutuskan untuk berlayar untuk mencari harta karun di super.franky.yyy.com. Tugas pencarian dibagi menjadi dua misi, Luffy bertugas untuk mendapatkan gambar (.png, .jpg), sedangkan Zoro mendapatkan sisanya. Karena Luffy orangnya sangat teliti untuk mencari harta karun, ketika ia berhasil mendapatkan gambar, ia mendapatkan gambar dan melihatnya dengan kecepatan 10 kbps.
+> Saatnya berlayar! Luffy dan Zoro akhirnya memutuskan untuk berlayar untuk mencari harta karun di super.franky.yyy.com. Tugas pencarian dibagi menjadi dua misi, Luffy bertugas untuk mendapatkan gambar (.png, .jpg), sedangkan Zoro mendapatkan sisanya. Karena Luffy orangnya sangat teliti untuk mencari harta karun, ketika ia berhasil mendapatkan gambar, ia mendapatkan gambar dan melihatnya dengan kecepatan 10 kbps **(12)** Sedangkan, Zoro yang sangat bersemangat untuk mencari harta karun, sehingga kecepatan kapal Zoro tidak dibatasi ketika sudah mendapatkan harta yang diinginkannya **(13)**
 
-## 13
+```bash
+# acl-bandwidth.conf
+acl download url_regex -i \.jpg$ \.png$
 
-> Sedangkan, Zoro yang sangat bersemangat untuk mencari harta karun, sehingga kecepatan kapal Zoro tidak dibatasi ketika sudah mendapatkan harta yang diinginkannya.
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+
+acl luffy proxy_auth luffybelikapale01
+acl zoro proxy_auth zorobelikapale01
+
+delay_pools 2
+delay_class 1 1
+delay_parameters 1 1250/1250
+delay_access 1 deny zoro
+delay_access 1 allow download
+delay_access 1 deny all
+
+delay_class 2 1
+delay_parameters 2 -1/-1
+delay_access 2 allow zoro
+delay_access 2 deny luffy
+delay_access 2 deny all
+```
+
+Pada config ini, kita mengambil 3 acl yaitu:
+* download → file berekstensi .jpg dan .png
+* luffy → proxy_auth luffybelikapale01
+* zoro → proxy_auth zorobelikapale01
+
+Dengan acl tersebut, kita bisa mengalokasikan pada delay pools.
+Pada delay class pertama, kita menambahkan 1250bytes → 10.000bit (10Kb) dengan threshold 1250bytes. Kemudian yang di allow adalah luffy dan download, sisanya di deny.
+Pada delay class kedua, kita menambahkan parameter -1/-1, yang berarti tidak ada bandwidth, dan mengallow zoro, dan mendeny luffy.
+
+```bash
+include /etc/squid/acl.conf
+include /etc/squid/acl-bandwidth.conf
+
+http_port 5000
+visible_hostname jualbelikapal.e01.com
+
+http_access deny AVAILABLE_WORKING_1
+http_access deny AVAILABLE_WORKING_2
+http_access deny AVAILABLE_WORKING_3
+http_access deny AVAILABLE_WORKING_4
+http_access deny AVAILABLE_WORKING_5
+http_access deny AVAILABLE_WORKING_6
+http_access deny AVAILABLE_WORKING_7
+
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic children 5
+auth_param basic realm Proxy
+auth_param basic credentialsttl 2 hours
+auth_param basic casesensitive on
+acl USERS proxy_auth REQUIRED
+http_access allow USERS
+
+acl BLACKLIST dstdomain google.com
+deny_info http://super.franky.e01.com/ BLACKLIST
+```
+Kemudian config terpisah dapat ditambahkan
+
+Karena sulit untuk mengecek yang -1, maka saya memberi screenshot dengan membatasi 100byte. Untuk contoh tidak dibandwidth.
+![tidakdibandwidth](https://user-images.githubusercontent.com/57633103/141646057-de5b500b-1ec1-47d2-b5d3-431a2933f5df.png)
+
+## Script.sh
+
+```bash
+# Jipangu
+apt-get update
+apt-get install isc-dhcp-server -y
+
+cp -r shift3/default /etc/
+cp -r shift3/dhcp /etc/
+
+service isc-dhcp-server start
+
+# Foosha
+apt-get update
+apt-get install isc-dhcp-relay -y
+
+cp -r shift3/default /etc/
+cp -r shift3/network /etc/
+
+service isc-dhcp-relay start
+
+# Skypie
+pt-get update
+apt-get install apache2 -y
+apt-get install php -y
+apt-get install libapache2-mod-php7.0 -y
+
+cp -r shift3/www /var/
+cp -r shift3/sites-available /etc/apache2
+
+cd /etc/apache2/sites-available
+a2ensite super.franky.e01.com.conf
+
+service apache2 start
+
+# Water7
+apt-get update
+apt-get install squid -y
+apt-get install apache2-utils -y
+
+
+cp -r shift3/squid /etc/
+
+echo "nameserver 192.200.2.2" > /etc/resolv.conf
+
+service squid start
+
+# EniesLobby
+apt-get update
+apt-get install bind9 -y
+
+cp -r shift3/bind /etc/
+
+service bind9 start
+
+#Loguetown
+apt-get update
+apt-get install lynx -y
+apt-get install speedtest-cli -y
+
+## 2 ini harus dirun sendiri
+export PYTHONHTTPSVERIFY=0
+export http_proxy=http://192.200.2.3:5000
+```
 
 ### Kendala Pengerjaan
 
