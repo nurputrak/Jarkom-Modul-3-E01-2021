@@ -607,7 +607,7 @@ Kemudian config terpisah dapat ditambahkan
 
 Video test luffy
 
-https://user-images.githubusercontent.com/65794806/141647986-9432488e-3d21-40b7-90ce-24f5f951d038.mp4
+https://user-images.githubusercontent.com/65794806/141648264-0f8ebb58-202a-4be1-8dfb-37d1b5b75d8b.mp4
 
 Karena sulit untuk mengecek yang -1, maka saya memberi screenshot dengan membatasi 100byte. Untuk contoh tidak dibandwidth.
 
@@ -615,7 +615,7 @@ Karena sulit untuk mengecek yang -1, maka saya memberi screenshot dengan membata
 
 Video Zoro tidak ada delay bandwidth (karena sangat cepat)
 
-https://user-images.githubusercontent.com/65794806/141648018-6c6ba2f2-0921-4ffc-909c-8897b173907f.mp4
+https://user-images.githubusercontent.com/65794806/141648270-f7ec0383-0ab6-4174-a991-c198b70eb137.mp4
 
 ## Script.sh
 
