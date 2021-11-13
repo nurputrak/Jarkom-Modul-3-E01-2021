@@ -4,7 +4,7 @@
 - Nur Putra Khanafi 05111940000020
 - Husnan 05111940007002
 
-
+Script dan config" secara lengkap dapat dilihat pada repo https://github.com/theodorusclarence/jarkom-shift3-gns
 
 ### List
 
