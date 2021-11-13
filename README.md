@@ -605,8 +605,17 @@ deny_info http://super.franky.e01.com/ BLACKLIST
 ```
 Kemudian config terpisah dapat ditambahkan
 
+Video test luffy
+
+https://user-images.githubusercontent.com/65794806/141647986-9432488e-3d21-40b7-90ce-24f5f951d038.mp4
+
 Karena sulit untuk mengecek yang -1, maka saya memberi screenshot dengan membatasi 100byte. Untuk contoh tidak dibandwidth.
+
 ![tidakdibandwidth](https://user-images.githubusercontent.com/57633103/141646057-de5b500b-1ec1-47d2-b5d3-431a2933f5df.png)
+
+Video Zoro tidak ada delay bandwidth (karena sangat cepat)
+
+https://user-images.githubusercontent.com/65794806/141648018-6c6ba2f2-0921-4ffc-909c-8897b173907f.mp4
 
 ## Script.sh
 
