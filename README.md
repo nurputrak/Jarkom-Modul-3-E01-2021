@@ -19,8 +19,8 @@ Script dan config" secara lengkap dapat dilihat pada repo https://github.com/the
 9. [Soal 9](https://github.com/nurputrak/Jarkom-Modul-3-E01-2021#9)
 10. [Soal 10](https://github.com/nurputrak/Jarkom-Modul-3-E01-2021#10)
 11. [Soal 11](https://github.com/nurputrak/Jarkom-Modul-3-E01-2021#11)
-12. [Soal 12](https://github.com/nurputrak/Jarkom-Modul-3-E01-2021#12)
-13. [Soal 13](https://github.com/nurputrak/Jarkom-Modul-3-E01-2021#13)
+12. [Soal 12](https://github.com/nurputrak/Jarkom-Modul-3-E01-2021#12 & 13)
+13. [Soal 13](https://github.com/nurputrak/Jarkom-Modul-3-E01-2021#12 & 13)
 
 ## 1
 
