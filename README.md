@@ -373,13 +373,13 @@ http_access allow USERS
 
 `lynx http://its.ac.id`
 
-![no 9 4](https://user-images.githubusercontent.com/65794806/141647641-e223af5e-2f58-4257-9879-90e1ffed45c9.png)
-
 ![no 9 1](https://user-images.githubusercontent.com/65794806/141647642-67071c36-82b0-49b5-80e7-d9fef1261c4a.png)
 
 ![no 9 2](https://user-images.githubusercontent.com/65794806/141647644-c363a0d0-633e-44a0-824f-ef2fe1181979.png)
 
 ![no 9 3](https://user-images.githubusercontent.com/65794806/141647646-1f1e1cb9-50ee-44ff-bc7c-f27bc12ea8d7.png)
+
+![no 9 4](https://user-images.githubusercontent.com/65794806/141647641-e223af5e-2f58-4257-9879-90e1ffed45c9.png)
 
 Kedua username dan password berhasil masuk.
 
